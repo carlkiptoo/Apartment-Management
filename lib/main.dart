@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'theme/app_colors.dart';
 import 'screens/admin_login_screen.dart';
+import 'database/db_helper.dart';
 
-void main() {
+void main() async {
   runApp(const MyApp());
+
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Delete and recreate database
+  final dbHelper = DBHelper();
+  // await dbHelper.deleteAndRecreateDatabase();
 }
 
 class MyApp extends StatelessWidget {

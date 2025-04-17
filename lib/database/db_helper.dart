@@ -15,6 +15,24 @@ class DBHelper {
     return _db!;
   }
 
+  Future<void> deleteAndRecreateDatabase() async {
+    if (_db != null) {
+      await _db!.close();
+      _db = null;
+    }
+
+    final dbPath = await getDatabasesPath();
+    final path = join(dbPath, 'apartments.db');
+
+    if (await databaseExists(path)) {
+      await deleteDatabase(path);
+      print('Database successfully deleted');
+    }
+
+    _db = await _initDB();
+    print('New database created');
+  }
+
   Future<Database> _initDB() async {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, 'apartments.db');
@@ -27,19 +45,25 @@ class DBHelper {
         CREATE TABLE apartments (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT,
-        location TEXT,
-        price REAL,
-        imageUrl TEXT,
-        description TEXT
+        idNumber TEXT,
+        houseType TEXT,
+        houseNumber TEXT,
+        price REAL
         )
         ''');
-      },
+      }
     );
   }
 
   Future<int> insertApartment(Map<String, dynamic> data) async {
     final db = await database;
-    return await db.insert('apartments', data);
+    try {
+      data.remove('id');
+      return await db.insert('apartments', data);
+    } catch (e) {
+      print('Error inserting Apartment: $e');
+      rethrow;
+    }
   }
 
   Future<List<Map<String, dynamic>>> getApartments() async {
