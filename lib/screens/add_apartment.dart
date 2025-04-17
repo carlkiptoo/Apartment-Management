@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../database/db_helper.dart';
+import '../theme/app_colors.dart';
 
 class AddApartmentScreen extends StatefulWidget {
   const AddApartmentScreen({super.key});
@@ -77,10 +78,74 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
               ),
             ),
             const SizedBox(height: 16),
+
+            //location input
+            TextField(
+              controller: _locationController,
+              decoration: InputDecoration(
+                labelText: 'Location',
+                labelStyle: Theme.of(context).textTheme.bodyMedium,
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: AppColors.accent),
+                  borderRadius: BorderRadius.circular(8),
+                )
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            TextField(
+              controller: _priceController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: 'Price',
+                labelStyle: const TextStyle(color: AppColors.dark),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: AppColors.accent),
+                  borderRadius: BorderRadius.circular(8),
+                )
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // STILL THINKING ABOUT THIS FEATURE
+            TextField(
+              controller: _imageUrlController,
+              decoration: InputDecoration(
+                labelText: 'Image URL',
+                labelStyle: Theme.of(context).textTheme.bodyMedium,
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Theme.of(context).primaryColor),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xFFCCCCCC)),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            TextField(
+              controller: _descriptionController,
+              decoration: InputDecoration(
+                labelText: 'Description',
+                labelStyle: const TextStyle(color: AppColors.dark),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: AppColors.accent),
+                  borderRadius: BorderRadius.circular(8),
+                )
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            _loading ? const Center(
+              child: CircularProgressIndicator()
+            )
+                : ElevatedButton(onPressed: _submitApartment, child: const Text('Save Apartment'),),
           ],
         ),
-      )
-    )
+      ),
+    );
   }
 
 }
