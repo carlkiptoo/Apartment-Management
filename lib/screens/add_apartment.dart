@@ -88,6 +88,7 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Apartment Saved Successfully')),
       );
+      Navigator.pop(context, true);
       _nameController.clear();
       _idNumberController.clear();
       _houseTypeController.clear();

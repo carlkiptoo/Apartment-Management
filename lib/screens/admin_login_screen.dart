@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'add_apartment.dart';
-
+import 'apartment_list_screen.dart';
 
 import '../theme/app_colors.dart';class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -23,7 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (email == _adminEmail && password == _adminPassword) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (_) => const AddApartmentScreen()),
+        MaterialPageRoute(builder: (_) => const ApartmentListScreen()),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
