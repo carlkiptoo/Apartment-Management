@@ -10,14 +10,19 @@ class AddApartmentScreen extends StatefulWidget {
 }
 
 class _AddApartmentScreenState extends State<AddApartmentScreen> {
-
-  final List<String> _houseTypes = ['Studio Apt', '1 Bedroom', '2 Bedrooms', '3 Bedrooms', '4 Bedrooms'];
+  final List<String> _houseTypes = [
+    'Studio Apt',
+    '1 Bedroom',
+    '2 Bedrooms',
+    '3 Bedrooms',
+    '4 Bedrooms',
+  ];
 
   String? _selectedHouseType;
 
   final _nameController = TextEditingController();
   final _idNumberController = TextEditingController();
-  final  _houseTypeController = TextEditingController();
+  final _houseTypeController = TextEditingController();
   final _priceController = TextEditingController();
   final _houseNumberController = TextEditingController();
   // User should submit passport image
@@ -31,15 +36,12 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
     final houseNumber = _houseNumberController.text.trim();
     final priceText = _priceController.text.trim();
 
-
     //Validation
     if (name.isEmpty ||
         idNumber.isEmpty ||
         priceText.isEmpty ||
         houseNumber.isEmpty ||
-        _selectedHouseType == null
-    ) {
-
+        _selectedHouseType == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please fill in all fields')),
       );
@@ -111,7 +113,6 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
             ),
             const SizedBox(height: 16),
 
-
             TextField(
               controller: _idNumberController,
               keyboardType: TextInputType.number,
@@ -131,34 +132,34 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
             const SizedBox(height: 16),
 
             //location input
-           DropdownButtonFormField<String>(
-             value: _selectedHouseType,
-             decoration: InputDecoration(
-               labelText: 'House Type',
-               labelStyle: TextStyle(color: AppColors.dark),
-               focusedBorder: OutlineInputBorder(
-                 borderSide: BorderSide(color: AppColors.accent),
-                 borderRadius: BorderRadius.circular(8),
-               ),
-               enabledBorder: OutlineInputBorder(
-                 borderSide: BorderSide(color: Color(0xFFCCCCCC)),
-                 borderRadius: BorderRadius.circular(8),
-               ),
-             ),
-             items: _houseTypes.map((String type) {
-               return DropdownMenuItem<String>(
-                 value: type,
-                 child: Text(type),
-               );
-             }).toList(),
-             onChanged: (String? newValue) {
-               setState(() {
-                 _selectedHouseType = newValue;
-
-               });
-             },
-           ),
-            const SizedBox(height: 16,),
+            DropdownButtonFormField<String>(
+              value: _selectedHouseType,
+              decoration: InputDecoration(
+                labelText: 'House Type',
+                labelStyle: TextStyle(color: AppColors.dark),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: AppColors.accent),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xFFCCCCCC)),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              items:
+                  _houseTypes.map((String type) {
+                    return DropdownMenuItem<String>(
+                      value: type,
+                      child: Text(type),
+                    );
+                  }).toList(),
+              onChanged: (String? newValue) {
+                setState(() {
+                  _selectedHouseType = newValue;
+                });
+              },
+            ),
+            const SizedBox(height: 16),
 
             TextField(
               controller: _priceController,
@@ -198,8 +199,21 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
             _loading
                 ? const Center(child: CircularProgressIndicator())
                 : ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
                   onPressed: _submitApartment,
-                  child: const Text('Save Apartment'),
+                  child: const Text(
+                    'Save Apartment',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
           ],
         ),
