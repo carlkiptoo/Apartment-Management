@@ -1,5 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'dart:io';
 
 class DBHelper {
   static final DBHelper _instance = DBHelper._internal();
@@ -48,7 +49,8 @@ class DBHelper {
         idNumber TEXT,
         houseType TEXT,
         houseNumber TEXT,
-        price REAL
+        price REAL,
+        passportImage TEXT
         )
         ''');
       }

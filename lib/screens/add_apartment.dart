@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../database/db_helper.dart';
 import '../theme/app_colors.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class AddApartmentScreen extends StatefulWidget {
   const AddApartmentScreen({super.key});
@@ -25,10 +27,21 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
   final _houseTypeController = TextEditingController();
   final _priceController = TextEditingController();
   final _houseNumberController = TextEditingController();
+  File? _passportImage;
   // User should submit passport image
 
   bool _loading = false;
 
+  Future<void> _pickPassportImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.camera);
+
+    if (pickedFile != null) {
+      setState(() {
+        _passportImage = File(pickedFile.path);
+      });
+    }
+  }
   Future<void> _submitApartment() async {
     final name = _nameController.text.trim();
     final idNumber = _idNumberController.text.trim();
@@ -41,7 +54,9 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
         idNumber.isEmpty ||
         priceText.isEmpty ||
         houseNumber.isEmpty ||
-        _selectedHouseType == null) {
+        _selectedHouseType == null ||
+        _passportImage == null
+    ) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please fill in all fields')),
       );
@@ -63,6 +78,7 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
       "houseType": _selectedHouseType,
       "houseNumber": _houseNumberController.text,
       "price": double.tryParse(_priceController.text) ?? 0.0,
+      "passportImage": _passportImage!.path,
     };
     setState(() {
       _loading = true;
@@ -77,6 +93,10 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
       _houseTypeController.clear();
       _houseNumberController.clear();
       _priceController.clear();
+      setState(() {
+        _selectedHouseType = null;
+        _passportImage = null;
+      });
     } catch (e) {
       ScaffoldMessenger.of(
         context,
@@ -178,6 +198,22 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
               ),
             ),
             const SizedBox(height: 16),
+
+            ElevatedButton.icon(
+              icon: const Icon(Icons.camera_alt),
+              onPressed: _pickPassportImage,
+              label: const Text('Capture passport image'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 16),
+            if (_passportImage != null)
+              Image.file(
+                _passportImage!,
+                height: 150,
+              ),
 
             TextField(
               controller: _houseNumberController,

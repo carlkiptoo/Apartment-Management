@@ -10,7 +10,7 @@ void main() async {
 
   // Delete and recreate database
   final dbHelper = DBHelper();
-  // await dbHelper.deleteAndRecreateDatabase();
+  await dbHelper.deleteAndRecreateDatabase();
 }
 
 class MyApp extends StatelessWidget {
