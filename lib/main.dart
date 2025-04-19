@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'theme/app_colors.dart';
-import 'screens/admin_login_screen.dart';
+import 'screens/splash_screen.dart';
 import 'database/db_helper.dart';
 
 void main() async {
@@ -54,7 +54,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const LoginScreen(),
+      home: const SplashScreen(),
     );
   }
 }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'apartment_list_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../theme/app_colors.dart';
 
-import '../theme/app_colors.dart';class LoginScreen extends StatefulWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
@@ -15,19 +17,29 @@ class _LoginScreenState extends State<LoginScreen> {
   final String _adminEmail = 'admin@admin.com';
   final String _adminPassword = 'admin123';
 
-  void _login() {
+  bool _loading = false;
+
+  Future<void> _login() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isLoggedIn', true);
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
     if (email == _adminEmail && password == _adminPassword) {
+      setState(() {
+        _loading = true;
+      });
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isLoggedIn', true);
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const ApartmentListScreen()),
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Invalid credentials')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Invalid credentials')));
     }
   }
 
@@ -64,13 +76,10 @@ class _LoginScreenState extends State<LoginScreen> {
               obscureText: true,
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
-                onPressed: _login,
-                child: const Text('Login'),
-            )
+            ElevatedButton(onPressed: _login, child: const Text('Login')),
           ],
         ),
-      )
+      ),
     );
   }
 }
