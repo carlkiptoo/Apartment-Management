@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'add_apartment.dart';
 import 'apartment_list_screen.dart';
 
 import '../theme/app_colors.dart';class LoginScreen extends StatefulWidget {
@@ -21,7 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final password = _passwordController.text.trim();
 
     if (email == _adminEmail && password == _adminPassword) {
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const ApartmentListScreen()),
       );
