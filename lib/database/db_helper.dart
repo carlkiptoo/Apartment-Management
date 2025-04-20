@@ -1,6 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import 'dart:io';
+
 
 class DBHelper {
   static final DBHelper _instance = DBHelper._internal();
@@ -41,8 +41,8 @@ class DBHelper {
     return await openDatabase(
       path,
       version: 1,
-      onCreate: (db, version) {
-        return db.execute('''
+      onCreate: (db, version) async {
+       await db.execute('''
         CREATE TABLE apartments (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT,
@@ -51,6 +51,20 @@ class DBHelper {
         houseNumber TEXT,
         price REAL,
         passportImage TEXT
+        )
+        ''');
+
+        await db.execute('''
+        CREATE TABLE maintenance_requests (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        tenantId TEXT,
+        houseNumber TEXT,
+        issue TEXT,
+        status TEXT,
+        imagePath TEXT,
+        adminNotes TEXT,
+        dateReported TEXT,
+        dateResolved TEXT
         )
         ''');
       }

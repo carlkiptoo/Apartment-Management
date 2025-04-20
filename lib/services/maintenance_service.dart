@@ -40,7 +40,7 @@ class MaintenanceService {
       where: 'id = ?',
       whereArgs: [id],
 
-    )
+    );
   }
 
 }
