@@ -28,4 +28,19 @@ class MaintenanceService {
     return maps.map((map) => MaintenanceRequest.fromMap(map)).toList();
   }
 
+  Future<int> updateRequestStatus(int id, String status, {String? adminNotes, String? dateResolved}) async {
+    final db = await dbHelper.database;
+    return await db.update(
+      'maintenance_requests',
+      {
+        'status': status,
+        'adminNotes': adminNotes,
+        'dateResolved': dateResolved,
+      },
+      where: 'id = ?',
+      whereArgs: [id],
+
+    )
+  }
+
 }
