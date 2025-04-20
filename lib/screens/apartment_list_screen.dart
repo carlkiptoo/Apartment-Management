@@ -1,3 +1,4 @@
+import 'package:apartment_management/screens/maintenance_request_list.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../database/db_helper.dart';
@@ -61,6 +62,15 @@ class _ApartmentListScreenState extends State<ApartmentListScreen> {
       child: Scaffold(
         appBar: AppBar(title: const Text('Rental List'),
           actions: [
+            IconButton(
+              icon: const Icon(Icons.notifications),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const MaintenanceRequestListScreen()),
+                );
+              },
+            ),
             IconButton(onPressed: _logout,
               icon: const Icon(Icons.logout),
             )
