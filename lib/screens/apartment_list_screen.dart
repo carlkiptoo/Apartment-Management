@@ -5,6 +5,7 @@ import '../theme/app_colors.dart';
 import 'add_apartment.dart';
 import 'dart:io';
 import 'admin_login_screen.dart';
+import '../screens/tenant/add_maintenance_request.dart';
 
 class ApartmentListScreen extends StatefulWidget {
   const ApartmentListScreen({super.key});
@@ -97,15 +98,45 @@ class _ApartmentListScreenState extends State<ApartmentListScreen> {
             );
           },
         ),
+        // floatingActionButton: Padding(
+        //   padding: const EdgeInsets.only(bottom: 10.0),
+        //   child: Align(
+        //     alignment: Alignment.bottomCenter,
+        //     child: FloatingActionButton(
+        //       backgroundColor: AppColors.primary,
+        //       onPressed: _goToAddApartmentScreen,
+        //       child: const Icon(Icons.add),
+        //     ),
+        //   ),
+        // ),
         floatingActionButton: Padding(
           padding: const EdgeInsets.only(bottom: 10.0),
-          child: Align(
-            alignment: Alignment.bottomCenter,
-            child: FloatingActionButton(
-              backgroundColor: AppColors.primary,
-              onPressed: _goToAddApartmentScreen,
-              child: const Icon(Icons.add),
-            ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              //Dev button
+              FloatingActionButton.extended(
+                heroTag: 'dev_maintenance',
+                backgroundColor: Colors.orange,
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const AddMaintenanceRequestScreen(),
+                    ),
+                  );
+                },
+                label: const Text('Add Maintenance'),
+                icon: const Icon(Icons.build),
+              ),
+              const SizedBox(height: 10),
+
+              FloatingActionButton(
+                heroTag: 'add_apartment',
+                backgroundColor: AppColors.primary,
+                onPressed: _goToAddApartmentScreen,
+                child: const Icon(Icons.add),
+              )
+            ],
           ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
