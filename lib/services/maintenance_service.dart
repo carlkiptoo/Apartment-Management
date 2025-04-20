@@ -17,4 +17,15 @@ class MaintenanceService {
     return maps.map((map) => MaintenanceRequest.fromMap(map)).toList();
   }
 
+  Future<List<MaintenanceRequest>> getRequestByTenant(String tenantId) async {
+    final db = await dbHelper.database;
+    final maps = await db.query(
+      'maintenance_requests',
+      where: 'tenantId = ?',
+      whereArgs: [tenantId],
+    );
+
+    return maps.map((map) => MaintenanceRequest.fromMap(map)).toList();
+  }
+
 }
