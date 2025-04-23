@@ -1,5 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import '../database/db_helper.dart';
+import 'package:http/http.dart' as http;
 import '../theme/app_colors.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -23,6 +25,8 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
   String? _selectedHouseType;
 
   final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _phoneController = TextEditingController();
   final _idNumberController = TextEditingController();
   final _houseTypeController = TextEditingController();
   final _priceController = TextEditingController();
@@ -45,15 +49,19 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
   Future<void> _submitApartment() async {
     final name = _nameController.text.trim();
     final idNumber = _idNumberController.text.trim();
+    final email = _emailController.text.trim();
+    final phone = _phoneController.text.trim();
     late String houseType = _houseTypeController.text.trim();
-    final houseNumber = _houseNumberController.text.trim();
+    final unitNumber = _houseNumberController.text.trim();
     final priceText = _priceController.text.trim();
 
     //Validation
     if (name.isEmpty ||
         idNumber.isEmpty ||
+        email.isEmpty ||
+        phone.isEmpty ||
         priceText.isEmpty ||
-        houseNumber.isEmpty ||
+        unitNumber.isEmpty ||
         _selectedHouseType == null ||
         _passportImage == null
     ) {
@@ -72,36 +80,64 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
       return;
     }
 
-    final apartment = {
-      "name": _nameController.text,
-      "idNumber": _idNumberController.text,
-      "houseType": _selectedHouseType,
-      "houseNumber": _houseNumberController.text,
-      "price": double.tryParse(_priceController.text) ?? 0.0,
-      "passportImage": _passportImage!.path,
-    };
     setState(() {
       _loading = true;
     });
+
+    final apartment = {
+      "name": _nameController.text,
+      "idNumber": _idNumberController.text,
+      "email": _emailController.text,
+      "phone": _phoneController.text,
+      "houseType": _selectedHouseType,
+      "unitNumber": _houseNumberController.text,
+      "price": double.tryParse(_priceController.text) ?? 0.0,
+      "passportImage": _passportImage!.path,
+    };
+
     try {
-      await DBHelper().insertApartment(apartment);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Apartment Saved Successfully')),
+
+      const url = 'http://192.168.100.6:5000/api/tenants/register';
+
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {"Content-Type": "application/json"},
+        body: json.encode(apartment)
       );
-      Navigator.pop(context, true);
-      _nameController.clear();
-      _idNumberController.clear();
-      _houseTypeController.clear();
-      _houseNumberController.clear();
-      _priceController.clear();
-      setState(() {
-        _selectedHouseType = null;
-        _passportImage = null;
-      });
+
+      if (response.statusCode == 201) {
+        final resBody = json.decode(response.body);
+        final password = resBody['password'];
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Tenant created successfully. Password $password'),
+          ),
+        );
+        Navigator.pop(context, true);
+        _nameController.clear();
+        _emailController.clear();
+        _phoneController.clear();
+        _idNumberController.clear();
+        _houseTypeController.clear();
+        _houseNumberController.clear();
+        _priceController.clear();
+      } else {
+        final resBody = json.decode(response.body);
+        final errMessage = resBody['message'] ?? 'Something went wrong';
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $errMessage'),
+          backgroundColor: Colors.red,
+          ),
+        );
+      }
     } catch (e) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('Error saving: $e')));
+      ).showSnackBar(SnackBar(content: Text('Error saving: $e'),
+      backgroundColor: Colors.red,
+      ),
+      );
       print('Error $e');
     } finally {
       setState(() => _loading = false);
@@ -148,6 +184,42 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                   borderSide: BorderSide(color: Color(0xFFCCCCCC)),
                   borderRadius: BorderRadius.circular(8),
                 ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            
+            TextField(
+              controller: _emailController,
+              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecoration(
+                labelText: 'Email',
+                labelStyle: Theme.of(context).textTheme.bodyMedium,
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Theme.of(context).primaryColor),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xFFCCCCCC)),
+                  borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            ),
+            const SizedBox(height: 16),
+
+            TextField(
+              controller: _phoneController,
+              keyboardType: TextInputType.phone,
+              decoration: InputDecoration(
+                labelText: 'Phone Number',
+                labelStyle: Theme.of(context).textTheme.bodyMedium,
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Theme.of(context).primaryColor),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xFFCCCCCC)),
+                  borderRadius: BorderRadius.circular(8),
+                )
               ),
             ),
             const SizedBox(height: 16),
@@ -210,6 +282,7 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
               ),
             ),
             const SizedBox(height: 16),
+
             if (_passportImage != null)
               Image.file(
                 _passportImage!,
