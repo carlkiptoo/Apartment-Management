@@ -110,7 +110,7 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
         final password = resBody['password'];
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Tenant created successfully. Password $password'),
+          SnackBar(content: Text('Tenant created successfully.'),
           ),
         );
         Navigator.pop(context, true);

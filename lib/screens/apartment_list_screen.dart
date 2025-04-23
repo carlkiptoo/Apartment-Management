@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:apartment_management/screens/maintenance_request_list.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../database/db_helper.dart';
 import '../theme/app_colors.dart';
@@ -25,10 +28,21 @@ class _ApartmentListScreenState extends State<ApartmentListScreen> {
   }
 
   Future<void> _loadApartments() async {
-    final data = await DBHelper().getApartments();
-    setState(() {
-      _apartments = data;
-    });
+   final response = await http.get(Uri.parse('http://192.168.100.6:5000/api/tenants/tenants'));
+
+   if (response.statusCode == 200) {
+     final decoded = json.decode(response.body);
+
+     if (decoded['tenants'] != null && decoded['tenants'] is List) {
+       setState(() {
+         _apartments = List<Map<String, dynamic>>.from(decoded['tenants']);
+       });
+     }
+   } else {
+     ScaffoldMessenger.of(context).showSnackBar(
+       SnackBar(content: Text('Failed to load tenants')),
+     );
+   }
   }
 
   void _goToAddApartmentScreen() async {
